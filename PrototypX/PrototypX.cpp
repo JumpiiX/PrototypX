@@ -1,7 +1,18 @@
-#include <iostream>
+#include <SFML/Graphics.hpp>
 
-int main()
-{
-    std::cout << "Hello World!\n";
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "PrototypX");
+    window.clear(sf::Color::Black);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.display();
+    }
+
+    return 0;
 }
-
