@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "PrototypX");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "PrototypX.exe");
     window.clear(sf::Color::Black);
 
     while (window.isOpen()) {
