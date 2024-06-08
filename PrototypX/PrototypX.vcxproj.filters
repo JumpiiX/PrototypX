@@ -13,10 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Quelldateien\models">
+      <UniqueIdentifier>{314b1761-09b1-41ac-9f5e-e9a9bc7448eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\physics">
+      <UniqueIdentifier>{40a0a6e8-879f-4a21-b394-603462a64666}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PrototypX.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="dot.cpp">
+      <Filter>Quelldateien\models</Filter>
+    </ClCompile>
+    <ClCompile Include="movementController.cpp">
+      <Filter>Quelldateien\physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dot.h">
+      <Filter>Quelldateien\models</Filter>
+    </ClInclude>
+    <ClInclude Include="movementController.h">
+      <Filter>Quelldateien\physics</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
