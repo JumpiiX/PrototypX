@@ -1,18 +1,15 @@
-// physics/MovementController.cpp
 #include "MovementController.h"
 
-MovementController::MovementController(Dot& dot) : dot(dot) {}
+MovementController::MovementController(Dot& dot) : dot(dot), moveSpeed(300.0f) {}
 
-void MovementController::handleInput(const sf::Keyboard::Key& key) {
-    sf::Vector2f position = dot.getPosition();
+void MovementController::handleInput(float deltaTime) {
+    sf::Vector2f movement(0.f, 0.f);
 
-    switch (key) {
-    case sf::Keyboard::W: position.y -= 10; break;
-    case sf::Keyboard::S: position.y += 10; break;
-    case sf::Keyboard::A: position.x -= 10; break;
-    case sf::Keyboard::D: position.x += 10; break;
-    default: break;
-    }
+    if (keys[sf::Keyboard::W]) movement.y -= moveSpeed * deltaTime;
+    if (keys[sf::Keyboard::S]) movement.y += moveSpeed * deltaTime;
+    if (keys[sf::Keyboard::A]) movement.x -= moveSpeed * deltaTime;
+    if (keys[sf::Keyboard::D]) movement.x += moveSpeed * deltaTime;
 
-    dot.setPosition(position.x, position.y);
+    sf::Vector2f newPosition = dot.getPosition() + movement;
+    dot.setPosition(newPosition.x, newPosition.y);
 }

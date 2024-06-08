@@ -1,5 +1,3 @@
-#pragma once
-// models/Dot.h
 #ifndef DOT_H
 #define DOT_H
 
@@ -11,7 +9,7 @@ public:
 
     Dot(float x, float y);
     void setPosition(float x, float y);
-    sf::Vector2f getPosition();
+    sf::Vector2f getPosition() const;  
 };
 
 #endif

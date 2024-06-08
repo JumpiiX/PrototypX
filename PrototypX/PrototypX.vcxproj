@@ -134,14 +134,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="actionController.cpp" />
     <ClCompile Include="dot.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)models;$(ProjectDir)physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="movementController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="actionController.h" />
     <ClInclude Include="dot.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="movementController.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

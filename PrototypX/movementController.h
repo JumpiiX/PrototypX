@@ -1,16 +1,18 @@
-#pragma once
-// physics/MovementController.h
 #ifndef MOVEMENT_CONTROLLER_H
 #define MOVEMENT_CONTROLLER_H
 
-#include "Dot.h"
+#include "dot.h"
+#include <SFML/Graphics.hpp>
+#include <map>
 
 class MovementController {
 public:
     Dot& dot;
+    std::map<sf::Keyboard::Key, bool> keys;
+    float moveSpeed;
 
     MovementController(Dot& dot);
-    void handleInput(const sf::Keyboard::Key& key);
+    void handleInput(float deltaTime);
 };
 
 #endif
