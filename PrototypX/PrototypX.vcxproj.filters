@@ -53,5 +53,8 @@
     <ClInclude Include="actionController.h">
       <Filter>Quelldateien\actions</Filter>
     </ClInclude>
+    <ClInclude Include="crosshair.h">
+      <Filter>Quelldateien\models</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

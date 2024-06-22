@@ -5,19 +5,20 @@
 #include "movementController.h"
 #include "enemy.h"
 #include "actionController.h"
+#include "crosshair.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "PrototypX.exe");
-    window.setMouseCursorVisible(false); 
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "PrototypeX.exe");
+    window.setMouseCursorVisible(false);
 
-    Dot dot(960, 540); 
+    Dot dot(960, 540);
     MovementController controller(dot);
     ActionController actionController;
+    Crosshair crosshair(960, 540);
 
-    std::srand(std::time(nullptr)); 
+    std::srand(std::time(nullptr));
     sf::Clock clock;
 
-  
     controller.keys[sf::Keyboard::W] = false;
     controller.keys[sf::Keyboard::A] = false;
     controller.keys[sf::Keyboard::S] = false;
@@ -46,13 +47,16 @@ int main() {
         }
 
         controller.handleInput(deltaTime);
-
         actionController.updateProjectiles(window, deltaTime);
+
+        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+        crosshair.updatePosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 
         window.clear(sf::Color::Black);
         window.draw(dot.shape);
         actionController.drawEnemies(window);
         actionController.drawProjectiles(window);
+        crosshair.draw(window);
         window.display();
     }
 
