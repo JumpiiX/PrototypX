@@ -12,6 +12,7 @@ add_executable(${PROJECT_NAME}
         dot.cpp
         enemy.cpp
         movementController.cpp
+        map.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-system)

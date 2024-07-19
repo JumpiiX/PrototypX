@@ -3,16 +3,19 @@
 #include <ctime>
 #include "dot.h"
 #include "movementController.h"
-#include "enemy.h"
 #include "actionController.h"
 #include "crosshair.h"
+#include "map.h"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "PrototypeX.exe");
     window.setMouseCursorVisible(false);
 
-    Dot dot(960, 540);
-    MovementController controller(dot);
+    Map map(60, 34, 32);
+    sf::Vector2f spawnPoint = map.getPlayerSpawnPoint();
+
+    Dot dot(spawnPoint.x, spawnPoint.y);
+    MovementController controller(dot, map);
     ActionController actionController;
     Crosshair crosshair(960, 540);
 
@@ -53,6 +56,7 @@ int main() {
         crosshair.updatePosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 
         window.clear(sf::Color::Black);
+        window.draw(map);
         window.draw(dot.shape);
         actionController.drawEnemies(window);
         actionController.drawProjectiles(window);
