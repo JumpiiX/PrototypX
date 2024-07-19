@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.10)
+project(ProtoypX)
+
+set(CMAKE_CXX_STANDARD 17)
+
+set(SFML_DIR "D:/sfml/lib/cmake/SFML")
+find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
+
+add_executable(${PROJECT_NAME}
+        main.cpp
+        actionController.cpp
+        dot.cpp
+        enemy.cpp
+        movementController.cpp
+)
+
+target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-system)
+
+target_include_directories(${PROJECT_NAME} PRIVATE "D:/sfml/include")
+
+if(WIN32)
+    file(GLOB SFML_DLLS "D:/sfml/bin/*.dll")
+    file(COPY ${SFML_DLLS} DESTINATION ${CMAKE_BINARY_DIR})
+endif()
