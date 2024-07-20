@@ -1,71 +1,60 @@
 #include "map.h"
+#include <iostream>
 
 Map::Map(int width, int height, int tileSize)
         : m_width(width), m_height(height), m_tileSize(tileSize),
           m_tiles(height, std::vector<bool>(width, true)),
           m_vertices(sf::Quads),
-          m_rng(std::random_device{}()) {
+          m_rng(std::random_device{}()),
+          m_chunkSize(16) {
     generate();
 }
 
 void Map::generate() {
-    for (int y = 0; y < m_height; ++y) {
-        for (int x = 0; x < m_width; ++x) {
-            m_tiles[y][x] = true;
+    for (int y = 0; y < m_height; y += m_chunkSize) {
+        for (int x = 0; x < m_width; x += m_chunkSize) {
+            generateChunk(x, y);
         }
     }
-
-    int currentX = m_width / 2;
-    int currentY = m_height / 2;
-    int pathLength = m_width * m_height / 3;
-
-    std::uniform_int_distribution<int> dist(0, 3);
-
-    for (int i = 0; i < pathLength; ++i) {
-        m_tiles[currentY][currentX] = false;
-
-        int direction = dist(m_rng);
-        switch(direction) {
-            case 0: if(currentX > 1) currentX--; break;
-            case 1: if(currentX < m_width-2) currentX++; break;
-            case 2: if(currentY > 1) currentY--; break;
-            case 3: if(currentY < m_height-2) currentY++; break;
-        }
-    }
-
-    for (int i = 0; i < 5; ++i) {
-        smoothMap();
-    }
-
+    smoothMap();
     updateVertices();
 }
 
-void Map::smoothMap() {
-    std::vector<std::vector<bool>> newTiles = m_tiles;
-    for (int y = 1; y < m_height-1; ++y) {
-        for (int x = 1; x < m_width-1; ++x) {
-            int walls = countAdjacentWalls(x, y);
-            if (walls > 4)
-                newTiles[y][x] = true;
-            else if (walls < 4)
-                newTiles[y][x] = false;
+void Map::generateChunk(int startX, int startY) {
+    if (startX < 0 || startY < 0 || startX >= m_width || startY >= m_height) return;
+
+    std::queue<sf::Vector2i> frontier;
+    int centerX = std::min(startX + m_chunkSize / 2, m_width - 1);
+    int centerY = std::min(startY + m_chunkSize / 2, m_height - 1);
+    frontier.push(sf::Vector2i(centerX, centerY));
+    m_tiles[centerY][centerX] = false;
+
+    while (!frontier.empty()) {
+        sf::Vector2i current = frontier.front();
+        frontier.pop();
+
+        std::vector<sf::Vector2i> directions = {
+                {0, -2}, {2, 0}, {0, 2}, {-2, 0}
+        };
+        std::shuffle(directions.begin(), directions.end(), m_rng);
+
+        for (const auto& dir : directions) {
+            sf::Vector2i next(current.x + dir.x, current.y + dir.y);
+            if (next.x >= startX && next.x < startX + m_chunkSize &&
+                next.y >= startY && next.y < startY + m_chunkSize &&
+                next.x < m_width && next.y < m_height &&
+                m_tiles[next.y][next.x]) {
+                m_tiles[next.y][next.x] = false;
+                if (current.y + dir.y / 2 < m_height && current.x + dir.x / 2 < m_width) {
+                    m_tiles[current.y + dir.y / 2][current.x + dir.x / 2] = false;
+                }
+                frontier.push(next);
+            }
         }
     }
-    m_tiles = newTiles;
 }
 
-int Map::countAdjacentWalls(int x, int y) {
-    int count = 0;
-    for (int i = -1; i <= 1; ++i) {
-        for (int j = -1; j <= 1; ++j) {
-            if (i == 0 && j == 0) continue;
-            if (x+j < 0 || x+j >= m_width || y+i < 0 || y+i >= m_height)
-                count++;
-            else if (m_tiles[y+i][x+j])
-                count++;
-        }
-    }
-    return count;
+void Map::smoothMap() {
 }
 
 void Map::updateVertices() {
@@ -102,6 +91,28 @@ sf::Vector2f Map::getPlayerSpawnPoint() const {
         }
     }
     return sf::Vector2f(m_tileSize, m_tileSize);
+}
+
+void Map::updateMap(const sf::Vector2f& playerPosition) {
+    int playerTileX = static_cast<int>(playerPosition.x / m_tileSize);
+    int playerTileY = static_cast<int>(playerPosition.y / m_tileSize);
+
+    playerTileX = std::max(0, std::min(playerTileX, m_width - 1));
+    playerTileY = std::max(0, std::min(playerTileY, m_height - 1));
+
+    int chunkX = (playerTileX / m_chunkSize) * m_chunkSize;
+    int chunkY = (playerTileY / m_chunkSize) * m_chunkSize;
+
+    for (int y = chunkY - m_chunkSize; y <= chunkY + m_chunkSize; y += m_chunkSize) {
+        for (int x = chunkX - m_chunkSize; x <= chunkX + m_chunkSize; x += m_chunkSize) {
+            if (x >= 0 && x < m_width && y >= 0 && y < m_height) {
+                if (m_tiles[y][x]) {
+                    generateChunk(x, y);
+                }
+            }
+        }
+    }
+    updateVertices();
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states) const {

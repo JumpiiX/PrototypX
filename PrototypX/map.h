@@ -1,9 +1,9 @@
-#ifndef MAP_H
-#define MAP_H
-
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <random>
+#include <queue>
+#include <algorithm>
 
 class Map : public sf::Drawable {
 public:
@@ -11,21 +11,19 @@ public:
     bool isWall(int x, int y) const;
     int getTileSize() const { return m_tileSize; }
     sf::Vector2f getPlayerSpawnPoint() const;
+    void updateMap(const sf::Vector2f& playerPosition);
 
 private:
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void generate();
+    void generateChunk(int startX, int startY);
     void smoothMap();
-    int countAdjacentWalls(int x, int y);
     void updateVertices();
     void addWallVertices(const sf::Vector2f& pos);
 
-    int m_width;
-    int m_height;
-    int m_tileSize;
+    int m_width, m_height, m_tileSize;
     std::vector<std::vector<bool>> m_tiles;
     sf::VertexArray m_vertices;
     std::mt19937 m_rng;
+    int m_chunkSize;
 };
-
-#endif
